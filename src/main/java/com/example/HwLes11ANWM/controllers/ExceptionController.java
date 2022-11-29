@@ -1,6 +1,6 @@
-package com.example.HwLes11ANWM.Controllers;
+package com.example.HwLes11ANWM.controllers;
 
-import com.example.HwLes11ANWM.Exceptions.RecordNotFoundException;
+import com.example.HwLes11ANWM.exceptions.RecordNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

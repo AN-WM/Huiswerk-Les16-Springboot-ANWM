@@ -1,4 +1,4 @@
-package com.example.HwLes11ANWM.Exceptions;
+package com.example.HwLes11ANWM.exceptions;
 
 public class RecordNotFoundException extends RuntimeException {
     public RecordNotFoundException() {

@@ -1,4 +1,4 @@
-package com.example.HwLes11ANWM.Exceptions;
+package com.example.HwLes11ANWM.exceptions;
 
 public class IndexOutOfBoundsException extends RuntimeException {
     public IndexOutOfBoundsException() {

@@ -1,8 +1,8 @@
-package com.example.HwLes11ANWM.Controllers;
+package com.example.HwLes11ANWM.controllers;
 
-import com.example.HwLes11ANWM.Exceptions.RecordNotFoundException;
-import com.example.HwLes11ANWM.Models.Television;
-import com.example.HwLes11ANWM.Repositories.TelevisionRepository;
+import com.example.HwLes11ANWM.exceptions.RecordNotFoundException;
+import com.example.HwLes11ANWM.models.Television;
+import com.example.HwLes11ANWM.repositories.TelevisionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +22,10 @@ public class TelevisionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getTelevision(@PathVariable Long id) {
-        if (id > 0 && id < televisionDatabase.count()) {
+        if (televisionDatabase.existsById(id)) {
             return ResponseEntity.ok(televisionDatabase.findById(id));
         } else {
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("ID " + id + "was not found");
         }
     }
 
@@ -41,11 +41,11 @@ public class TelevisionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateTelevision(@PathVariable int id, @RequestBody Television television) {
-        if (id > 0 && id < televisionDatabase.count()) {
-            television.setId((long) id);
+    public ResponseEntity<Object> updateTelevision(@PathVariable Long id, @RequestBody Television television) {
+        if (televisionDatabase.existsById(id)) {
+            television.setId(id);
             televisionDatabase.save(television);
-            return ResponseEntity.ok(televisionDatabase.findById((long) id));
+            return ResponseEntity.ok(televisionDatabase.findById(id));
         } else {
             throw new IndexOutOfBoundsException();
         }
