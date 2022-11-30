@@ -1,74 +1,56 @@
 package com.example.HwLes11ANWM.controllers;
 
-import com.example.HwLes11ANWM.exceptions.RecordNotFoundException;
+import com.example.HwLes11ANWM.dto.TelevisionDto;
 import com.example.HwLes11ANWM.models.Television;
-import com.example.HwLes11ANWM.repositories.TelevisionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import com.example.HwLes11ANWM.services.TelevisionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/televisions")
 public class TelevisionController {
 
-    @Autowired
-    private TelevisionRepository televisionDatabase;
+    private final TelevisionService televisionService;
+
+    public TelevisionController(TelevisionService televisionService) {
+        this.televisionService = televisionService;
+    }
 
     @GetMapping("")
     public ResponseEntity<Object> getTelevisions() {
-        return ResponseEntity.ok(televisionDatabase.findAll());
+        return ResponseEntity.ok(televisionService.getAllTelevisions());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getTelevision(@PathVariable Long id) {
-        if (televisionDatabase.existsById(id)) {
-            return ResponseEntity.ok(televisionDatabase.findById(id));
-        } else {
-            throw new IndexOutOfBoundsException("ID " + id + "was not found");
-        }
+    public ResponseEntity<TelevisionDto> getTelevision(@PathVariable("id") Long id) {
+        TelevisionDto returnDto = televisionService.getTelevision(id);
+        return ResponseEntity.ok(returnDto);
     }
 
     @PostMapping("")
     public ResponseEntity<Object> createTelevision(@RequestBody Television television) {
-        String type = television.getType();
-        if (televisionDatabase.findByType(type).equals(television)) {
-            return new ResponseEntity<>("Television already exists!", HttpStatus.CONFLICT);
-        } else {
-            televisionDatabase.save(television);
-            return ResponseEntity.created(null).body("Television was added");
-        }
+        Long createdId = televisionService.saveTelevision(television);
+
+        URI uri = URI.create(
+                ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/televisions/" + createdId).toUriString());
+        return ResponseEntity.created(uri).body("Television was added");
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateTelevision(@PathVariable Long id, @RequestBody Television television) {
-        if (televisionDatabase.existsById(id)) {
-            television.setId(id);
-            televisionDatabase.save(television);
-            return ResponseEntity.ok(televisionDatabase.findById(id));
-        } else {
-            throw new IndexOutOfBoundsException();
-        }
-    }
+        TelevisionDto returnTelevisionDto = televisionService.updateTelevision(id, television);
 
-    //Deze functie krijg ik niet meer werkend met de repository, dus heb ik vervangen door een mapping gebaseerd op ID.
-//    @DeleteMapping("")
-//    public ResponseEntity<Object> deleteTelevision(@RequestBody String type) {
-//        if (televisionDatabase.findByType(type) != null) {
-//            televisionDatabase.delete((Television) televisionDatabase.findByType(type));
-//            return ResponseEntity.ok("Television removed");
-//        } else {
-//            throw new RecordNotFoundException("Television not found");
-//        }
-//    }
+        return ResponseEntity.ok(returnTelevisionDto);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteTelevision(@PathVariable Long id) {
-        if (!televisionDatabase.findById(id).isEmpty()) {
-            televisionDatabase.deleteById(id);
-            return ResponseEntity.ok("Television removed");
-        } else {
-            throw new RecordNotFoundException("Television not found");
-        }
+        //Verkorte weergave
+        return televisionService.deleteTelevision(id);
     }
 }
