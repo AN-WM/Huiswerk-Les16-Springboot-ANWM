@@ -3,6 +3,7 @@ package com.example.HwLes11ANWM.controllers;
 import com.example.HwLes11ANWM.dto.TelevisionDto;
 import com.example.HwLes11ANWM.models.Television;
 import com.example.HwLes11ANWM.services.TelevisionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -15,6 +16,7 @@ public class TelevisionController {
 
     private final TelevisionService televisionService;
 
+    @Autowired
     public TelevisionController(TelevisionService televisionService) {
         this.televisionService = televisionService;
     }
