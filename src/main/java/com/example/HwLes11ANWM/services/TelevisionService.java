@@ -6,7 +6,6 @@ import com.example.HwLes11ANWM.exceptions.DuplicateRecordException;
 import com.example.HwLes11ANWM.exceptions.RecordNotFoundException;
 import com.example.HwLes11ANWM.models.Television;
 import com.example.HwLes11ANWM.repositories.TelevisionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +15,8 @@ import java.util.Optional;
 @Service
 public class TelevisionService {
 
-    @Autowired
     private final TelevisionRepository televisionRepository;
 
-    @Autowired
     public TelevisionService(TelevisionRepository tvRepos) {
         this.televisionRepository = tvRepos;
     }
@@ -38,30 +35,31 @@ public class TelevisionService {
     public TelevisionDto getTelevision(Long id) {
         Optional<Television> television = televisionRepository.findById(id);
         if (television.isEmpty()) {
-            throw new IndexOutOfBoundsException("ID " + id + " was not found");
+            throw new IndexOutOfBoundsException(String.format("ID %d was not found", id));
         } else {
             Television television1 = television.get();
             return fromTelevision(television1);
         }
     }
 
-    public Long saveTelevision(Television television) {
-        String type = television.getType();
+    public Long saveTelevision(TelevisionInputDto televisionInputDto) {
+        String type = televisionInputDto.getType();
         if (televisionRepository.findByType(type) != null) {
-            throw new DuplicateRecordException("A television with type " + type + " already exists");
+            throw new DuplicateRecordException(String.format("A television with type %s already exists", type));
         } else {
-            Television savedTelevision = televisionRepository.save(television);
+            Television savedTelevision = televisionRepository.save(toTelevision(televisionInputDto));
             return savedTelevision.getId();
         }
     }
 
-    public TelevisionDto updateTelevision(Long id, Television television) {
+    public TelevisionDto updateTelevision(Long id, TelevisionInputDto televisionInputDto) {
         if (televisionRepository.existsById(id)) {
-            television.setId(id);
-            televisionRepository.save(television);
-            return fromTelevision(television);
+            Television convertedTelevision = toTelevision(televisionInputDto);
+            convertedTelevision.setId(id);
+            televisionRepository.save(convertedTelevision);
+            return fromTelevision(convertedTelevision);
         } else {
-            throw new IndexOutOfBoundsException("No tv with id " + id + " was found, cannot update");
+            throw new IndexOutOfBoundsException(String.format("Television with id %d was not found, cannot update", id));
         }
     }
 
@@ -70,7 +68,7 @@ public class TelevisionService {
             televisionRepository.deleteById(id);
             return ResponseEntity.ok("Television deleted from database");
         } else {
-            throw new RecordNotFoundException("Television with id " + id + " was not found");
+            throw new RecordNotFoundException(String.format("Television with id %d was not found", id));
         }
     }
 

@@ -1,7 +1,7 @@
 package com.example.HwLes11ANWM.controllers;
 
 import com.example.HwLes11ANWM.dto.TelevisionDto;
-import com.example.HwLes11ANWM.models.Television;
+import com.example.HwLes11ANWM.dto.TelevisionInputDto;
 import com.example.HwLes11ANWM.services.TelevisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +33,8 @@ public class TelevisionController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Object> createTelevision(@RequestBody Television television) {
-        Long createdId = televisionService.saveTelevision(television);
+    public ResponseEntity<Object> createTelevision(@RequestBody TelevisionInputDto televisionInputDto) {
+        Long createdId = televisionService.saveTelevision(televisionInputDto);
 
         URI uri = URI.create(
                 ServletUriComponentsBuilder
@@ -44,8 +44,8 @@ public class TelevisionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateTelevision(@PathVariable Long id, @RequestBody Television television) {
-        TelevisionDto returnTelevisionDto = televisionService.updateTelevision(id, television);
+    public ResponseEntity<Object> updateTelevision(@PathVariable Long id, @RequestBody TelevisionInputDto televisionInputDto) {
+        TelevisionDto returnTelevisionDto = televisionService.updateTelevision(id, televisionInputDto);
 
         return ResponseEntity.ok(returnTelevisionDto);
     }

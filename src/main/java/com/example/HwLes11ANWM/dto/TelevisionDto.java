@@ -1,7 +1,5 @@
 package com.example.HwLes11ANWM.dto;
 
-import com.example.HwLes11ANWM.models.Television;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
