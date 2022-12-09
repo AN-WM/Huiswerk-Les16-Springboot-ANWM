@@ -1,7 +1,6 @@
-package com.example.HwLes11ANWM.dto;
+package com.example.HwLes11ANWM.dtos;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.*;
 
 public class TelevisionDto {
     @NotEmpty
@@ -23,31 +22,10 @@ public class TelevisionDto {
     private Boolean ambiLight;
     private Integer originalStock;
     private Integer sold;
+    public RemoteControllerDto remoteController;
 
     public TelevisionDto() {
     }
-
-//    public static TelevisionDto fromTelevision(Television television) {
-//        var dto = new TelevisionDto();
-//        dto.type = television.getType();
-//        dto.brand = television.getBrand();
-//        dto.name = television.getName();
-//        dto.price = television.getPrice();
-//        dto.availableSize = television.getAvailableSize();
-//        dto.refreshRate = television.getRefreshRate();
-//        dto.screenType = television.getScreenType();
-//        dto.screenQuality = television.getScreenQuality();
-//        dto.smartTv = television.getSmartTv();
-//        dto.wifi = television.getWifi();
-//        dto.voiceControl = television.getVoiceControl();
-//        dto.hdr = television.getHdr();
-//        dto.bluetooth = television.getBluetooth();
-//        dto.ambiLight = television.getAmbiLight();
-//        dto.originalStock = television.getOriginalStock();
-//        dto.sold = television.getSold();
-//
-//        return dto;
-//    }
 
     public String getType() {
         return type;
@@ -175,5 +153,13 @@ public class TelevisionDto {
 
     public void setSold(Integer sold) {
         this.sold = sold;
+    }
+
+    public RemoteControllerDto getRemoteController() {
+        return remoteController;
+    }
+
+    public void setRemoteController(RemoteControllerDto remoteController) {
+        this.remoteController = remoteController;
     }
 }

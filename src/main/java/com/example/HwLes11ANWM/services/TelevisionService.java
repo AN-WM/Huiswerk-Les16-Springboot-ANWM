@@ -1,24 +1,37 @@
 package com.example.HwLes11ANWM.services;
 
-import com.example.HwLes11ANWM.dto.TelevisionDto;
-import com.example.HwLes11ANWM.dto.TelevisionInputDto;
+import com.example.HwLes11ANWM.dtos.TelevisionDto;
+import com.example.HwLes11ANWM.dtos.TelevisionInputDto;
 import com.example.HwLes11ANWM.exceptions.DuplicateRecordException;
 import com.example.HwLes11ANWM.exceptions.RecordNotFoundException;
+import com.example.HwLes11ANWM.models.CIModule;
+import com.example.HwLes11ANWM.models.RemoteController;
 import com.example.HwLes11ANWM.models.Television;
+import com.example.HwLes11ANWM.repositories.CIModuleRepository;
+import com.example.HwLes11ANWM.repositories.RemoteControllerRepository;
 import com.example.HwLes11ANWM.repositories.TelevisionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TelevisionService {
 
     private final TelevisionRepository televisionRepository;
+    private final RemoteControllerRepository remoteControllerRepository;
+    private final CIModuleRepository ciModuleRepository;
 
-    public TelevisionService(TelevisionRepository tvRepos) {
-        this.televisionRepository = tvRepos;
+    @Autowired
+    public TelevisionService (TelevisionRepository televisionRepository,
+                              RemoteControllerRepository remoteControllerRepository,
+                              CIModuleRepository ciModuleRepository) {
+        this.televisionRepository = televisionRepository;
+        this.remoteControllerRepository = remoteControllerRepository;
+        this.ciModuleRepository = ciModuleRepository;
     }
 
     public Iterable<TelevisionDto> getAllTelevisions() {
@@ -94,7 +107,7 @@ public class TelevisionService {
         return television;
     }
 
-    // Dit is de vertaal methode van Television naar TelevisionDto
+    // Dit is de vertaalmethode van Television naar TelevisionDto
     public TelevisionDto fromTelevision(Television television){
         TelevisionDto dto = new TelevisionDto();
 
@@ -116,5 +129,57 @@ public class TelevisionService {
         dto.setSold(television.getSold());
 
         return dto;
+    }
+
+    public void assignRemoteControllerToTelevision(Long id, Long remoteControllerId) {
+        Optional<Television> optionalTelevision = televisionRepository.findById(id);
+        Optional<RemoteController> optionalRemoteController = remoteControllerRepository.findById(remoteControllerId);
+
+        if (optionalTelevision.isPresent() && optionalRemoteController.isPresent()) {
+            Television television = optionalTelevision.get();
+            RemoteController remoteController = optionalRemoteController.get();
+
+            television.setRemoteController(remoteController);
+            televisionRepository.save(television);
+
+            //Persoonlijke aanvulling om de foutmeldingen af te vangen en te verduidelijken
+        } else if (optionalTelevision.isEmpty() && optionalRemoteController.isPresent()){
+            throw new RecordNotFoundException(String.format("The television with id %d was not found", id));
+        } else if (optionalRemoteController.isEmpty() && optionalTelevision.isPresent()) {
+            throw new RecordNotFoundException(String.format("The remote controller with id %d was not found", remoteControllerId));
+        } else {
+            throw new RecordNotFoundException("This television and remote controller could not be found");
+        }
+    }
+
+//    De formule voor een verkeerd om One to Many. Oeps.
+//    public void assignCIModuleToTelevision(Long televisionId, Long ciModuleId) {
+//        Optional<Television> optionalTelevision = televisionRepository.findById(televisionId);
+//        Optional<CIModule> optionalCIModule = ciModuleRepository.findById(ciModuleId);
+//
+//        if (optionalTelevision.isPresent() && optionalCIModule.isPresent()) {
+//            Television television = optionalTelevision.get();
+//            CIModule ciModule = optionalCIModule.get();
+//            List<CIModule> ciModuleList = television.getCiModuleList();
+//
+//            ciModuleList.add(ciModule);
+//            television.setCiModuleList(ciModuleList);
+//            televisionRepository.save(television);
+//        }
+//    }
+
+    public void assignCIModuleToTelevision(Long televisionId, Long ciModuleId) {
+        Optional<Television> optionalTelevision = televisionRepository.findById(televisionId);
+        Optional<CIModule> optionalCIModule = ciModuleRepository.findById(ciModuleId);
+
+        if (optionalTelevision.isPresent() && optionalCIModule.isPresent()) {
+            Television television = optionalTelevision.get();
+            CIModule ciModule = optionalCIModule.get();
+
+            television.setCiModule(ciModule);
+            televisionRepository.save(television);
+        } else {
+            throw new RecordNotFoundException("Either the television or the CI-Module could not be found");
+        }
     }
 }
