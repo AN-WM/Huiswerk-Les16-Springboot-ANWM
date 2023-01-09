@@ -1,6 +1,8 @@
 package com.example.HwLes11ANWM.controllers;
 
+import com.example.HwLes11ANWM.models.TelevisionWallBracketKey;
 import com.example.HwLes11ANWM.services.TelevisionWallBracketService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +22,9 @@ public class TelevisionWallBracketController {
     }
 
     @PostMapping("/{televisionId}/{wallBracketId}")
-    public void addTelevisionWallBracket(@PathVariable("televisionId") Long televisionId, @PathVariable("wallBracketId") Long wallbracketId) {
-        televisionWallBracketService.addTelevisionWallBracket(televisionId, wallbracketId);
+    public ResponseEntity<Object> addTelevisionWallBracket(@PathVariable("televisionId") Long televisionId, @PathVariable("wallBracketId") Long wallbracketId) {
+        TelevisionWallBracketKey id = televisionWallBracketService.addTelevisionWallBracket(televisionId, wallbracketId);
+
+        return ResponseEntity.ok(id);
     }
 }

@@ -94,6 +94,7 @@ public class TelevisionWallBracketService {
         TelevisionWallBracketKey id = new TelevisionWallBracketKey(televisionId, wallBracketId);
         televisionWallBracket.setId(id);
         televisionWallBracketRepository.save(televisionWallBracket);
+
         return id;
     }
 
