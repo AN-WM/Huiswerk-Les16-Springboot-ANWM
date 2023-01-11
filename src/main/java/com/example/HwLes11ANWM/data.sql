@@ -1,0 +1,2 @@
+INSERT INTO users (username, password, enabled, apikey, email) VALUES ('henk', '$2a$12$drB1Abi/.kJptBxJvfjTcOr62GD9qAU8OHuzUjOBAPnkQ85qKRM6q', true, '7847493', 'test@testy.tst');
+INSERT INTO authorities (username, authority) VALUES ('henk', 'ROLE_ADMIN');

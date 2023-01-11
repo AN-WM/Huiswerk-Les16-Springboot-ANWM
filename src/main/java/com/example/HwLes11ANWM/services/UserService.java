@@ -1,15 +1,26 @@
 package com.example.HwLes11ANWM.services;
 
 
-import java.util.ArrayList;
+import com.example.HwLes11ANWM.dtos.UserDto;
+import com.example.HwLes11ANWM.exceptions.UsernameNotFoundException;
+import com.example.HwLes11ANWM.models.Authority;
+import com.example.HwLes11ANWM.models.User;
+import com.example.HwLes11ANWM.repositories.UserRepository;
+import com.example.HwLes11ANWM.utils.RandomStringGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-/*moest hier niet een annotatie?*/
+import java.util.*;
+
+@Service
 public class UserService {
-    /*inject de juiste repository*/
+
+    @Autowired
+    private UserRepository userRepository;
 
     public List<UserDto> getUsers() {
         List<UserDto> collection = new ArrayList<>();
-        List<User> list = /*repo*/.findAll();
+        List<User> list = userRepository.findAll();
         for (User user : list) {
             collection.add(fromUser(user));
         }
@@ -18,58 +29,58 @@ public class UserService {
 
     public UserDto getUser(String username) {
         UserDto dto = new UserDto();
-        Optional<User> user = /*repo*/.findById(username);
+        Optional<User> user = userRepository.findById(username);
         if (user.isPresent()){
             dto = fromUser(user.get());
         }else {
-            throw new /*exception*/(username);
+            throw new UsernameNotFoundException(username);
         }
         return dto;
     }
 
     public boolean userExists(String username) {
-        return /*repo*/.existsById(username);
+        return userRepository.existsById(username);
     }
 
     public String createUser(UserDto userDto) {
         String randomString = RandomStringGenerator.generateAlphaNumeric(20);
         userDto.setApikey(randomString);
-        User newUser = /*repo*/.save(toUser(userDto));
+        User newUser = userRepository.save(toUser(userDto));
         return newUser.getUsername();
     }
 
     public void deleteUser(String username) {
-        /*repo*/.deleteById(username);
+        userRepository.deleteById(username);
     }
 
     public void updateUser(String username, UserDto newUser) {
-        if (!userRepository.existsById(username)) throw new /*exception*/();
-        User user = /*repo*/.findById(username).get();
+        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
+        User user = userRepository.findById(username).get();
         user.setPassword(newUser.getPassword());
-        /*repo*/.save(user);
+        userRepository.save(user);
     }
 
     public Set<Authority> getAuthorities(String username) {
-        if (!/*repo*/.existsById(username)) throw new /*exception*/(username);
-        User user = /*repo*/.findById(username).get();
+        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
+        User user = userRepository.findById(username).get();
         UserDto userDto = fromUser(user);
         return userDto.getAuthorities();
     }
 
     public void addAuthority(String username, String authority) {
 
-        if (!/*repo*/.existsById(username)) throw new /*exception*/(username);
-        User user = /*repo*/.findById(username).get();
+        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
+        User user = userRepository.findById(username).get();
         user.addAuthority(new Authority(username, authority));
-        /*repo*/.save(user);
+        userRepository.save(user);
     }
 
     public void removeAuthority(String username, String authority) {
-        if (!/*repo*/.existsById(username)) throw new /*exception*/(username);
-        User user = /*repo*/.findById(username).get();
+        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
+        User user = userRepository.findById(username).get();
         Authority authorityToRemove = user.getAuthorities().stream().filter((a) -> a.getAuthority().equalsIgnoreCase(authority)).findAny().get();
         user.removeAuthority(authorityToRemove);
-        /*repo*/.save(user);
+        userRepository.save(user);
     }
 
     public static UserDto fromUser(User user){

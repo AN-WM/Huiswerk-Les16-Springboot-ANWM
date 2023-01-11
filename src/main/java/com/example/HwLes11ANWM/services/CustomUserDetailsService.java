@@ -1,15 +1,25 @@
 package com.example.HwLes11ANWM.services;
 
 
+import com.example.HwLes11ANWM.dtos.UserDto;
+import com.example.HwLes11ANWM.models.Authority;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 
-
-/*annotatie*/
+@Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    /*inject userservice */
-
+    @Autowired
+    private UserService userService;
 
 
     @Override

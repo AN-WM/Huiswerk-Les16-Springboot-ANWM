@@ -1,7 +1,9 @@
 package com.example.HwLes11ANWM.controllers;
 
-import nl.novi.techiteasy1121.dtos.UserDto;
-import nl.novi.techiteasy1121.exceptions.BadRequestException;
+import com.example.HwLes11ANWM.dtos.UserDto;
+import com.example.HwLes11ANWM.exceptions.BadRequestException;
+import com.example.HwLes11ANWM.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -15,7 +17,8 @@ import java.util.Map;
 @RequestMapping(value = "/users")
 public class UserController {
 
-    /*inject userService*/
+    @Autowired
+    private UserService userService;
 
     @GetMapping(value = "")
     public ResponseEntity<List<UserDto>> getUsers() {

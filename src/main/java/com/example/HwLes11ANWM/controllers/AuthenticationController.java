@@ -1,9 +1,16 @@
 package com.example.HwLes11ANWM.controllers;
 
+import com.example.HwLes11ANWM.payload.AuthenticationRequest;
+import com.example.HwLes11ANWM.payload.AuthenticationResponse;
+import com.example.HwLes11ANWM.utils.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -12,8 +19,14 @@ import java.security.Principal;
 @RestController
 public class AuthenticationController {
 
-    /*inject authentionManager, userDetailService en jwtUtil*/
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @GetMapping(value = "/authenticated")
     public ResponseEntity<Object> authenticated(Authentication authentication, Principal principal) {
