@@ -42,7 +42,7 @@ public class UserController {
     public ResponseEntity<UserDto> createKlant(@RequestBody UserDto dto) {;
 
         String newUsername = userService.createUser(dto);
-        userService.addAuthority(newUsername, "ROLE_USER");
+        userService.addAuthority(newUsername, "USER");
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
                 .buildAndExpand(newUsername).toUri();

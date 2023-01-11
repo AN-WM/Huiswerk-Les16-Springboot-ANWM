@@ -77,6 +77,11 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.GET,"/televisions/**").hasAuthority("USER")
                 .antMatchers(HttpMethod.GET,"/wallbrackets/**").hasAuthority("USER")
 
+                .antMatchers(HttpMethod.PUT,"/cimodules/**").hasAuthority("USER")
+                .antMatchers(HttpMethod.PUT,"/remotecontrollers/**").hasAuthority("USER")
+                .antMatchers(HttpMethod.PUT,"/televisions/**").hasAuthority("USER")
+                .antMatchers(HttpMethod.PUT,"/wallbrackets/**").hasAuthority("USER")
+
                 .antMatchers("/authenticated").authenticated()
                 .antMatchers("/authenticate").permitAll()/*allen dit punt mag toegankelijk zijn voor niet ingelogde gebruikers*/
                 .anyRequest().permitAll()
